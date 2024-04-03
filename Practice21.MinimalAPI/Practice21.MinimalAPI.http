@@ -1,0 +1,6 @@
+@Practice21.MinimalAPI_HostAddress = http://localhost:5207
+
+GET {{Practice21.MinimalAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

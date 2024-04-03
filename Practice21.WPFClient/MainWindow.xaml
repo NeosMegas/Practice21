@@ -1,0 +1,155 @@
+﻿<Window x:Class="Practice21.WPFClient.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Practice21.WPFClient"
+        mc:Ignorable="d"
+        Title="Список контактов" Height="450" Width="800"
+        Icon="contacts.ico"
+        WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="5" />
+        </Style>
+        <Style TargetType="Button" x:Key="AdminButtonStyle">
+            <Setter Property="Margin" Value="5" />
+            <Setter Property="Visibility" Value="Collapsed"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=UserIsAdmin}" Value="True">
+                    <Setter Property="Visibility" Value="Visible"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="StackPanel" x:Key="StackPanelBoolVisibility">
+            <Setter Property="Visibility" Value="Collapsed"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=IsUserLoggedIn}" Value="True">
+                    <Setter Property="Visibility" Value="Visible"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="8*" />
+            <RowDefinition Height="Auto"  />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel>
+            <TextBlock x:Name="tbUserLogin" Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=CurrentUser.Login}" TextWrapping="Wrap" VerticalAlignment="Center" Margin="5,5,5,0"/>
+            <TextBlock x:Name="tbUserRole" Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=UserRole}" TextWrapping="Wrap" VerticalAlignment="Center" Margin="5,0,5,5"/>
+        </StackPanel>
+        <TextBox x:Name="txtLogin" Grid.Column="1" Margin="5" VerticalAlignment="Center" GotFocus="LoginTextBoxes_GotFocus" GotMouseCapture="LoginTextBoxes_GotFocus" TextChanged="txtLogin_TextChanged">
+            <TextBox.Style>
+                <Style TargetType="TextBox" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+                    <Style.Resources>
+                        <VisualBrush x:Key="CueBannerBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
+                            <VisualBrush.Visual>
+                                <Label Content="Логин" Foreground="LightGray"/>
+                            </VisualBrush.Visual>
+                        </VisualBrush>
+                    </Style.Resources>
+                    <Style.Triggers>
+                        <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
+                            <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+                        </Trigger>
+                        <Trigger Property="Text" Value="{x:Null}">
+                            <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter Property="Background" Value="White" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBox.Style>
+        </TextBox>
+        <TextBox x:Name="txtPassword" Grid.Column="2" Margin="5" VerticalAlignment="Center" GotFocus="LoginTextBoxes_GotFocus" GotMouseCapture="LoginTextBoxes_GotFocus" TextChanged="txtLogin_TextChanged">
+            <TextBox.Style>
+                <Style TargetType="TextBox" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+                    <Style.Resources>
+                        <VisualBrush x:Key="CueBannerBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
+                            <VisualBrush.Visual>
+                                <Label Content="Пароль" Foreground="LightGray" />
+                            </VisualBrush.Visual>
+                        </VisualBrush>
+                    </Style.Resources>
+                    <Style.Triggers>
+                        <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
+                            <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+                        </Trigger>
+                        <Trigger Property="Text" Value="{x:Null}">
+                            <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter Property="Background" Value="White" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBox.Style>
+        </TextBox>
+
+        <Button x:Name="btnLogin" Content="Войти" Grid.Column="3" Click="btnLogin_Click" IsEnabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=IsLoginButtonEnabled}"/>
+        <ListBox x:Name="lstEntries"
+                 Grid.Row="1"
+                 Grid.ColumnSpan="4"
+                 ItemsSource="{Binding
+                                RelativeSource={RelativeSource Mode=FindAncestor,
+                                AncestorType=Window},
+                                Path=ViewModel.PhoneBookEntries}"
+                 IsSynchronizedWithCurrentItem="True"
+                 SelectionChanged="lstEntries_SelectionChanged">
+            <ListBox.Resources>
+                <Style TargetType="TextBox" >
+                    <Setter Property="IsReadOnly" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=UserCanReadOnly}" />
+                    <Setter Property="BorderThickness" Value="0" />
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <SolidColorBrush Opacity="0"/>
+                        </Setter.Value>
+                    </Setter>
+                    <EventSetter Event="PreviewMouseUp" Handler="TextBox_PreviewMouseUp"/>
+                    <EventSetter Event="LostFocus" Handler="TextBox_LostFocus"/>
+                </Style>
+                <local:PhoneNumberConverter x:Key="phoneConverter" />
+            </ListBox.Resources>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" >
+                            <TextBox x:Name="txtLastName" Text="{Binding LastName}" FontSize="24" />
+                            <TextBox x:Name="txtFirstName" Text="{Binding FirstName}" FontSize="24" />
+                            <TextBox x:Name="txtMiddleName" Text="{Binding MiddleName}" FontSize="24" />
+                        </StackPanel>
+                        <TextBox x:Name="txtPhoneNumber" Text="{Binding PhoneNumber, StringFormat=+0 (000) 000 00 00, Converter={StaticResource phoneConverter}}" FontSize="20" PreviewTextInput="txtPhoneNumber_PreviewTextInput" DataObject.Pasting="TextBoxPasting"/>
+                        <TextBox x:Name="txtAddress" Text="{Binding Address}" />
+                        <TextBox x:Name="txtDescription" Text="{Binding Description}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <StackPanel x:Name="stkActions" Grid.Row="3" Grid.ColumnSpan="4" Orientation="Horizontal" HorizontalAlignment="Center" Style="{StaticResource StackPanelBoolVisibility}">
+            <Button x:Name="btnAddEntry" Content="Добавить запись"
+                    IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor},
+                    Path=CanUserAddEntry}"
+                    Click="btnAddEntry_Click"/>
+            <Button x:Name="btnDeleteEntry" Content="Удалить запись"
+                    IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor},
+                    Path=CanUserDeleteEntry}"
+                    Style="{StaticResource AdminButtonStyle}"
+                    Click="btnDeleteEntry_Click"/>
+            <Button x:Name="btnEditUsers" Content="Редактировать пользователей"
+                    IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor},
+                    Path=UserIsAdmin}"
+                    Style="{StaticResource AdminButtonStyle}"
+                    Click="btnEditUsers_Click"/>
+        </StackPanel>
+        
+    </Grid>
+</Window>
