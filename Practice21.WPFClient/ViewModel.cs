@@ -35,7 +35,7 @@ namespace Practice21.WPFClient
                 }
             }
         }
-        private Model model { get; set; }
+        private PhoneBookModel model { get; set; }
         public User CurrentUser {
             get => currentUser;
             private set
@@ -120,7 +120,7 @@ namespace Practice21.WPFClient
 
         public ViewModel()
         {
-            model = new Model();
+            model = new PhoneBookModel();
             CurrentUser = currentUser = model.CurrentUser;
             UserRole = model.UserRole;
             PhoneBookEntries = model.PhoneBookEntries;

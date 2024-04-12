@@ -1,0 +1,70 @@
+﻿@{
+    ViewData["Title"] = "Телефонная книга";
+}
+
+@if (phoneBookModel.CurrentUser.Id > 0)
+{
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#userBar" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between" id="userBar">
+                <ul class="navbar-nav flex-grow-1">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-controller="Home" asp-action="AddEntry">Добавить запись</a>
+                    </li>
+                    @if (phoneBookModel.CurrentUser.Id == 1)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Home" asp-action="EditUsers">Редактировать пользователей</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
+}
+
+<div class="text-center">
+    <h1 class="display-4">Телефонная книга</h1>
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Фамилия</th>
+                <th>Имя</th>
+                <th>Отчество</th>
+                <th>Номер телефона</th>
+                <th>Адрес</th>
+                <th>Описание</th>
+                @if (phoneBookModel.CurrentUser.Id == 1)
+                {
+                    <th>Действия</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (PhoneBookEntry item in phoneBookModel.PhoneBookEntries)
+            {
+                <tr>
+                    <td>@item.LastName</td>
+                    <td>@item.FirstName</td>
+                    <td>@item.MiddleName</td>
+                    <td class="text-nowrap">@item.PhoneNumber.ToString("+0 (000) 000-00-00")</td>
+                    <td>@item.Address</td>
+                    <td>@item.Description</td>
+                    @if (phoneBookModel.CurrentUser.Id == 1)
+                    {
+                        <td>
+                            <div class="btn-group">
+                                @Html.ActionLink("Редактировать", "EditEntry", "Home", new { id = item.Id}, new{ @class = "btn btn-outline-primary btn-sm", role = "button" })
+                                @Html.ActionLink("Удалить", "DeleteEntry", "Home", new { id = item.Id }, new { @class = "btn btn-outline-danger btn-sm", role = "button" })
+                            </div>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

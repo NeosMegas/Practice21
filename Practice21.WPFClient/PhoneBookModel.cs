@@ -1,18 +1,14 @@
-﻿using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Practice21.MinimalAPI.Models;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Security.Claims;
-using System.Windows;
-using System.Windows.Markup.Localizer;
 
 namespace Practice21.WPFClient
 {
-    public class Model
+    public class PhoneBookModel
     {
         public ObservableCollection<PhoneBookEntry> PhoneBookEntries { get; set; }
         public ObservableCollection<User> Users { get; set; }
@@ -36,7 +32,7 @@ namespace Practice21.WPFClient
 
         private HttpClient httpClient = new HttpClient();
 
-        public Model()
+        public PhoneBookModel()
         {
             CurrentUser = anonymousUser;
             if (!GetEntries())
@@ -86,6 +82,7 @@ namespace Practice21.WPFClient
         {
             if (entry != null)
             {
+                CheckEntry(ref entry);
                 var httpResponse = httpClient.PostAsJsonAsync(baseUrl + "api/PhoneBookEntry", entry);
                 Debug.WriteLine(httpResponse.Result.Content.ReadAsStringAsync().Result);
                 if (!httpResponse.Result.IsSuccessStatusCode) return false;
@@ -116,6 +113,7 @@ namespace Practice21.WPFClient
         {
             if (entry != null && PhoneBookEntries.Where(e => e.Id == entry.Id).Any())
             {
+                CheckEntry(ref entry);
                 var httpResponse = httpClient.PutAsJsonAsync(baseUrl + "api/PhoneBookEntry/" + entry.Id, entry);
                 Debug.WriteLine(httpResponse.Result.Content.ReadAsStringAsync().Result);
                 if (!httpResponse.Result.IsSuccessStatusCode) return false;
@@ -130,11 +128,21 @@ namespace Practice21.WPFClient
             }
             return false;
         }
+
+        void CheckEntry(ref PhoneBookEntry entry)
+        {
+            entry.LastName ??= "";
+            entry.FirstName ??= "";
+            entry.MiddleName ??= "";
+            entry.Address ??= "";
+            entry.Description ??= "";
+            if (entry.LastName == "" && entry.FirstName == "" && entry.MiddleName == "") entry.FirstName = "RandomName" + Random.Shared.Next();
+        }
         #endregion
 
         #region WorkWithUsers
 
-        private string GetUserRole(User user)
+        public string GetUserRole(User user)
         {
             switch (user.RoleId)
             {
@@ -195,6 +203,7 @@ namespace Practice21.WPFClient
         {
             if (user != null)
             {
+                CheckUser(ref  user);
                 var httpResponse = httpClient.PostAsJsonAsync(baseUrl + "api/Users", user);
                 Debug.WriteLine(httpResponse.Result.Content.ReadAsStringAsync().Result);
                 if (!httpResponse.Result.IsSuccessStatusCode) return false;
@@ -225,6 +234,7 @@ namespace Practice21.WPFClient
         {
             if (user != null && Users.Where(e => e.Id == user.Id).Any())
             {
+                CheckUser(ref user);
                 var httpResponse = httpClient.PutAsJsonAsync(baseUrl + "api/Users/" + user.Id, user);
                 Debug.WriteLine(httpResponse.Result.Content.ReadAsStringAsync().Result);
                 if (!httpResponse.Result.IsSuccessStatusCode) return false;
@@ -237,6 +247,14 @@ namespace Practice21.WPFClient
             return false;
         }
 
+        void CheckUser(ref User user)
+        {
+            string currentUserLogin = user.Login ?? "";
+            if (currentUserLogin == null || currentUserLogin == string.Empty) currentUserLogin = "user" + Random.Shared.Next();
+            while (Users.Where(u=>u.Login == currentUserLogin).Any()) currentUserLogin = currentUserLogin + Random.Shared.Next();
+            user.Login = currentUserLogin;
+            if (user.Password == null || user.Password == string.Empty) user.Password = Random.Shared.Next(0, 99999999).ToString("00000000");
+        }
 
         #endregion
 

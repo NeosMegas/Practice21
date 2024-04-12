@@ -1,0 +1,49 @@
+﻿@{
+    ViewData["Title"] = "Редактирование записи";
+}
+@model User
+
+@if (phoneBookModel.CurrentUser.RoleId == 1)
+{
+    @using (Html.BeginForm(Model.Id == 0 ? "CreateUser" : "UpdateUser", "Home", FormMethod.Post))
+    {
+        <div class="form-group">
+            <label for="Id">Id</label>
+            @Html.TextBoxFor(u => u.Id, new { @class = "form-control", @placeholder = "Id", type = "number", @readonly = "readonly" })
+        </div>
+        <div class="form-group">
+            <label for="Login">Логин</label>
+            @Html.TextBoxFor(u => u.Login, new { @class = "form-control", @placeholder = "Логин", autofocus = "autofocus" })
+        </div>
+        <div class="form-group">
+            <label for="Password">Пароль</label>
+            @Html.TextBoxFor(u => u.Password, new { @class = "form-control", @placeholder = "Пароль" })
+        </div>
+        <div class="form-group">
+            <label for="RoleId">Роль</label>
+            <select class="form-control" name="RoleId">
+                @{
+                    for (int i = 0; i < phoneBookModel.Roles.Count; i++)
+                    {
+                        if(Model.RoleId == phoneBookModel.Roles[i].Id)
+                        {
+                            <option selected value="@phoneBookModel.Roles[i].Id">@phoneBookModel.Roles[i].DisplayName (@phoneBookModel.Roles[i].Id)</option>
+                        }
+                        else
+                        {
+                            <option value="@phoneBookModel.Roles[i].Id">@phoneBookModel.Roles[i].DisplayName (@phoneBookModel.Roles[i].Id)</option>
+                        }
+                    }
+                }
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">OK</button>
+        @Html.ActionLink("Отмена", "EditUsers", "Home", null, new { @class = "btn btn-secondary", role = "button" })
+    }
+}
+else
+{
+    <div class="alert alert-warning" role="alert">
+        <p>Недостаточно прав</p>
+    </div>
+}

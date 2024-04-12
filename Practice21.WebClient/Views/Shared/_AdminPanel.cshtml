@@ -1,0 +1,17 @@
+﻿@if (phoneBookModel.CurrentUser.RoleId == 1)
+{
+    <ul class="navbar-nav">
+        <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+            <ul class="navbar-nav flex-grow-1">
+                <li class="nav-item">
+                    <button class="btn btn-success" asp-controller="Home" asp-action="AddEntry">Добавить запись</button>
+                </li>
+            </ul>
+        </div>
+        <li class="nav-item">
+            <form class="form-inline" asp-controller="Home" asp-action="Logout" asp-route-returnUrl="@Url.Action("Index", "Home")">
+                <button type="submit" class="nav-link btn btn-link text-dark">Выйти</button>
+            </form>
+        </li>
+    </ul>
+}

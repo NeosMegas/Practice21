@@ -1,0 +1,19 @@
+﻿<ul class="navbar-nav">
+@if (phoneBookModel.CurrentUser.Id > 0)
+{
+    <li class="nav-item">
+            <a class="nav-link text-dark" title="Пользователь">@phoneBookModel.CurrentUser.Login<br />@phoneBookModel.UserRole</a>
+    </li>
+    <li class="nav-item">
+        <form  class="form-inline" asp-controller="Home" asp-action="Logout" asp-route-returnUrl="@Url.Action("Index", "Home")">
+                <button type="submit" class="nav-link btn btn-link text-dark">Выйти</button>
+        </form>
+    </li>
+}
+else
+{
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-controller="Home" asp-action="Login">Войти</a>
+    </li>
+}
+</ul>

@@ -1,0 +1,45 @@
+﻿@{
+    ViewData["Title"] = "Редактирование записи";
+}
+@model PhoneBookEntry
+
+@if (phoneBookModel.CurrentUser.RoleId > 0)
+{
+    @using (Html.BeginForm(Model.Id == 0 ? "CreateEntry" : "UpdateEntry", "Home", FormMethod.Post))
+    {
+        @Html.HiddenFor(e => e.Id, new { @class = "form-control", placeholder = "Id", @readonly = "readonly" })
+        <div class="form-group">
+            <label for="LastName">Фамилия</label>
+            @Html.TextBoxFor(e => e.LastName, new { @class = "form-control", @placeholder = "Фамилия", autofocus = "autofocus" })
+        </div>
+        <div class="form-group">
+            <label for="FirstName">Имя</label>
+            @Html.TextBoxFor(e => e.FirstName, new { @class = "form-control", @placeholder = "Имя" })
+        </div>
+        <div class="form-group">
+            <label for="MiddleName">Отчество</label>
+            @Html.TextBoxFor(e => e.MiddleName, new { @class = "form-control", @placeholder = "Отчество" })
+        </div>
+        <div class="form-group">
+            <label for="PhoneNumber">Номер телефона</label>
+            @Html.TextBoxFor(e => e.PhoneNumber, new { @class = "form-control", @placeholder = "Номер телефона" })
+        </div>
+        <div class="form-group">
+            <label for="Address">Адрес</label>
+            @Html.TextBoxFor(e => e.Address, new { @class = "form-control", @placeholder = "Адрес" })
+        </div>
+        <div class="form-group">
+            <label for="Description">Описание</label>
+            @Html.TextAreaFor(e => e.Description, new { @class = "form-control", @placeholder = "Описание", maxlength = "10000" })
+        </div>
+        <button type="submit" class="btn btn-primary">OK</button>
+        @Html.ActionLink("Отмена", "Index", "Home", null, new { @class = "btn btn-secondary", role = "button" })
+        @* <button type="button" class="btn btn-secondary">Отмена</button> *@
+    }
+}
+else
+{
+    <div class="alert alert-warning" role="alert">
+        <p>Недостаточно прав</p>
+    </div>
+}

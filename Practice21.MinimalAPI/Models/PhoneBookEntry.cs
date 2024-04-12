@@ -4,25 +4,25 @@ namespace Practice21.MinimalAPI.Models
 {
     public class PhoneBookEntry : IEquatable<PhoneBookEntry>
     {
-        public int Id { get; set; }
+        public int Id { get; set; } = 0;
 
         [Display(Name = "Фамилия"), StringLength(60, MinimumLength = 2), Required]
-        public string? LastName { get; set; }
+        public string? LastName { get; set; } = string.Empty;
 
         [Display(Name = "Имя"), StringLength(60, MinimumLength = 2), Required]
-        public string? FirstName { get; set; }
+        public string? FirstName { get; set; } = string.Empty;
 
         [Display(Name = "Отчество"), StringLength(60, MinimumLength = 2), Required]
-        public string? MiddleName { get; set; }
+        public string? MiddleName { get; set; } = string.Empty;
 
         [Display(Name = "Номер телефона"), DisplayFormat(DataFormatString = "{0:+0 (000) 000-00-00}")]
-        public long PhoneNumber { get; set; }
+        public long PhoneNumber { get; set; } = 0;
 
         [Display(Name = "Адрес"), StringLength(60, MinimumLength = 2), Required]
-        public string? Address { get; set; }
+        public string? Address { get; set; } = string.Empty;
 
         [Display(Name = "Описание"), StringLength(100)]
-        public string? Description { get; set; }
+        public string? Description { get; set; } = string.Empty;
 
         public string? Name { get { return $"{LastName} {FirstName} {MiddleName}"; } }
 
